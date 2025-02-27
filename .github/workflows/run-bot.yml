@@ -1,0 +1,52 @@
+name: Run RDV Prefecture Bot
+
+on:
+  schedule:
+    # Run every minute
+    - cron: '* * * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9' # Use the version required by the project
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Generate config.json using environment variables
+      - name: Generate config.json
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          GENERATED_APP_PW: ${{ secrets.GENERATED_APP_PW }}
+          PREFECTURE_URL: ${{ secrets.PREFECTURE_URL }}
+        run: |
+          echo '{
+            "prefecture_url": "'"$PREFECTURE_URL"'",
+            "retry_period_seconds": 60,
+            "to_email": "'"$EMAIL_USER"'",
+            "smtp": {
+              "host": "smtp.gmail.com",
+              "port": 587,
+              "user": "'"$EMAIL_USER"'",
+              "password": "'"$GENERATED_APP_PW"'"
+            }
+          }' > config.json
+
+      # Run the bot script
+      - name: Run the bot
+        run: |
+          python main.py
