@@ -46,6 +46,11 @@ jobs:
             }
           }' > config.json
 
+      # Print config.json
+      - name: Print config.json
+        run: |
+         cat config.json
+
       # Run the bot script
       - name: Run the bot
         run: |
