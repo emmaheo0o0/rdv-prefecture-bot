@@ -1,9 +1,10 @@
 name: Run RDV Prefecture Bot
 
 on:
-  schedule:
+
+  # schedule:
     # Run every minute
-    - cron: '* * * * *'
+  #  - cron: '* * * * *'
   workflow_dispatch: # Allow manual triggering
 
 jobs:
