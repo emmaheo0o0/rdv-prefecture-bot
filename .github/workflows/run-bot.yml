@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9' # Use the version required by the project
+          python-version: '3.9'
 
       # Install dependencies
       - name: Install dependencies
@@ -27,7 +27,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Generate config.json using environment variables
+      # Generate config.json
       - name: Generate config.json
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
@@ -44,14 +44,15 @@ jobs:
               "user": "'"$EMAIL_USER"'",
               "password": "'"$GENERATED_APP_PW"'"
             }
-          }' > config.json
+          }' > src/config.json
 
-      # Print config.json
+      # Print config.json for debugging
       - name: Print config.json
         run: |
-         cat config.json
+          cat src/config.json
 
-      # Run the bot script
+      # Run the bot
       - name: Run the bot
         run: |
+          cd src
           python main.py
